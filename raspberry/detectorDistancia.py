@@ -1,27 +1,27 @@
 import RPi.GPIO as GPIO
 import time
 
+GPIO.setwarnings(False)
+
 GPIO.setmode(GPIO.BCM)
 
-trigger = 18
-echo = 24
 
-GPIO.setup(trigger, GPIO.OUT)
-GPIO.setup(echo, GPIO.IN)
+def distancia(estacion):
+    GPIO.setup(estacion['trigger'], GPIO.OUT)
+    GPIO.setup(estacion['echo'], GPIO.IN)
 
-def distancia():
-    GPIO.output(trigger, True)
+    GPIO.output(estacion['trigger'], True)
 
     time.sleep(0.00001)
-    GPIO.output(trigger, False)
+    GPIO.output(estacion['trigger'], False)
 
     StartTime = time.time()
     StopTime = time.time()
 
-    while (GPIO.input(echo) == 0):
+    while (GPIO.input(estacion['echo']) == 0):
         StartTime = time.time()
 
-    while (GPIO.input(echo) == 1):
+    while (GPIO.input(estacion['echo']) == 1):
         StopTime = time.time()
 
     timeDif = StopTime - StartTime
@@ -29,3 +29,5 @@ def distancia():
     d = (timeDif * 34300) / 2
 
     return int(d)
+
+print(distancia())

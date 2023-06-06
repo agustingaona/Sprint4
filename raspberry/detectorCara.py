@@ -4,9 +4,10 @@ import cv2
 face_cascade = cv2.CascadeClassifier('haar_cascades/haarcascade_frontalface_default.xml')
 
 # Inicializa la cámara
-cap = cv2.VideoCapture(0)
 
-def contar_personas():
+def contar_personas(estacion):
+    cap = cv2.VideoCapture(estacion['camara'])
+    
     contador_personas = 0
     
     ret, frame = cap.read()
