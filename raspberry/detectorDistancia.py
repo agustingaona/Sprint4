@@ -1,33 +1,41 @@
 import RPi.GPIO as GPIO
 import time
+from gpiozero import DistanceSensor
 
-GPIO.setwarnings(False)
+def falsaMedicion(estacion):
+    trigger = estacion['trigger']
+    echo = estacion['echo']
 
-GPIO.setmode(GPIO.BCM)
+    # Logica del sensor
 
+    return 13
 
-def distancia(estacion):
-    GPIO.setup(estacion['trigger'], GPIO.OUT)
-    GPIO.setup(estacion['echo'], GPIO.IN)
-
-    GPIO.output(estacion['trigger'], True)
-
+def medir_distancia(estacion):
+    trigger = estacion['trigger']
+    echo = estacion['echo']
+    time.sleep(0.1)
+    
+    GPIO.output(trigger, True)
     time.sleep(0.00001)
-    GPIO.output(estacion['trigger'], False)
+    GPIO.output(trigger, False)
 
     StartTime = time.time()
     StopTime = time.time()
 
-    while (GPIO.input(estacion['echo']) == 0):
+    while GPIO.input(echo) == 0:
         StartTime = time.time()
 
-    while (GPIO.input(estacion['echo']) == 1):
+    while GPIO.input(echo) == 1:
         StopTime = time.time()
 
-    timeDif = StopTime - StartTime
+    tiempo = StopTime - StartTime
+    velocidad_sonido = 34300
+    distancia = (tiempo * velocidad_sonido) / 2
 
-    d = (timeDif * 34300) / 2
+    return int(distancia)
 
-    return int(d)
+def distancia(estacion):
+    sensor = DistanceSensor(estacion['echo'], estacion['trigger'])
 
-print(distancia())
+    distancia = sensor.distance*100
+    return int(distancia)
